@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1618245009 source:c:\users\huber\documents\github\cpp\algorytm_genetyczny_hubertkryœciak\main.cpp
+	<iostream>
+	<stdlib.h>
+	<time.h>
+	<math.h>
+	<fstream>
+
