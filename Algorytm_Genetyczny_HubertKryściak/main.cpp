@@ -13,18 +13,18 @@ using namespace std;
 
 struct Osoba
 {
-    char gene[genes_lenght + 1]; //CIAG GENÓW
-    //+1 (ZNAK KOŃCOWY)
-    unsigned int w; //WARTOSC CIĄGU
+    char gene[genes_lenght + 1]; // liczby binarne
+    //+1 bo 0  to znak koncowy
+    unsigned int w; //Wartosc powyzszego ciagu
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-void clean(string nazwaPliku) //UFNKCJIA DO CZYSZCZENIA PLIKU Z WYNIKAMI
+void clean(string nazwaPliku) //czysci plik
 {
     remove("results.txt");
 }
 
-void kopiowanie(char gen1[], const char gen2[])  //KOPIOWANIE TABLICY GEN1 DO GEN2
+void kopiowanie(char gen1[], const char gen2[])  //Kopiowanie tablice gen2 do gen1
 {
     for(int i = 0; i < genes_lenght; i++)
     {
@@ -33,11 +33,11 @@ void kopiowanie(char gen1[], const char gen2[])  //KOPIOWANIE TABLICY GEN1 DO GE
         else if(gen2[i] == 1 || gen2[i] == '1')
             gen1[i] = '1';
         else
-            gen1[i] = -1; //NIEPOPRAWNY
+            gen1[i] = -1; //Niepoprawny
     }
 }
 
-unsigned int binNaDec(const char gene[])  //KONWERTER BINNADEC
+unsigned int binNaDec(const char gene[])  //zamienia i wypisuje 0/1
 {
     unsigned int w = 0;
     char genTmp[genes_lenght];
@@ -58,7 +58,7 @@ void ustawWartosc(Osoba Ludzie[], const unsigned int licznosc)  //USTAWIANIE WAR
         Ludzie[i].w = binNaDec(Ludzie[i].gene);
 }
 
-void tworzenieOsoby(Osoba Ludzie[], const unsigned int licznosc)  //PRZYDZIELANIE LOSOWYCH GENÓW DLA PIERWSZYCH OSOBNIKÓW
+void tworzenieOsoby(Osoba Ludzie[], const unsigned int licznosc)  //PRZYDZIELA LOSOWE GENY DO PIERWSZYCH OSOBNIKÓW
 {
     srand (time(NULL));
 
@@ -75,7 +75,7 @@ void tworzenieOsoby(Osoba Ludzie[], const unsigned int licznosc)  //PRZYDZIELANI
     }
 }
 
-//void wypiszOsoby(const Osoba Ludzie[], const unsigned int licznosc)  //Funkcja wypisujaca na ekran wartosci wszystkich osobnikow(napisane dla testów w trakcie żeby było łatwiej)
+//void wypiszOsoby(const Osoba Ludzie[], const unsigned int licznosc)  //Funkcja wypisujaca na ekran wartosci wszystkich osobnikow
 //{
 //    for(int i = 0; i < licznosc; i++)
 //        cout << i << ": " << Ludzie[i].gene << ", wartosc: " << Ludzie[i].w << endl;
@@ -87,7 +87,7 @@ double kwadrat(const double a, const double b, const double c, const double x)
     return y;
 }
 
-void Najlepszy(Osoba Ludzie[], const unsigned int licznosc, const double a, const double b, const double c)  //WYZNACZANIE WARTOŚCI FUNKCJI KWADRATOWEJ DLA DANEGO X
+void Najlepszy(Osoba Ludzie[], const unsigned int licznosc, const double a, const double b, const double c)  //FUNKCJA WYZNACZAJĄCA WARTOSCI FUNKCJI DLA DANEGO X
 {
     double w, maxW = kwadrat(a,b,c,Ludzie[0].w);
     double xMax = Ludzie[0].w;
@@ -103,7 +103,7 @@ void Najlepszy(Osoba Ludzie[], const unsigned int licznosc, const double a, cons
     }
     cout << "Wartosc najlepszego osobnika wynosi: " << maxW << ", dla x = " << xMax << endl;
 
-    //ZAPIS DO PLIKU(WYNIK)
+    //ZAPIS DO PLIKU
     ofstream plik;
     plik.open("results.txt", ios::app);
 
@@ -113,7 +113,7 @@ void Najlepszy(Osoba Ludzie[], const unsigned int licznosc, const double a, cons
     plik.close();
 }
 
-void krzyzuj(char *potomek, const char rodzic1[], const char rodzic2[], const int parametr)  //KRYŻOWANIE RODZICÓW. parametr DECYDUJE, CZY NAJPIERW DZIEDZICZONE JEST PO PIERWSZYM CZY PO DRUGIM RODZICU
+void krzyzuj(char *potomek, const char rodzic1[], const char rodzic2[], const int parametr)  //KRZYŻOWANIE, PARAMETR DECYDUJE CZY NAJPIERW PO PIERWSZYM CZY DRUGIM RODZICU
 {
     int punktCiecia = rand() % (genes_lenght - 1) + 1;
 
@@ -135,10 +135,10 @@ void krzyzuj(char *potomek, const char rodzic1[], const char rodzic2[], const in
     }
 }
 
-void krzyzowanie(Osoba Ludzie[], const unsigned int licznosc, const float pdpK)//LOSOWANIE RODZICÓW I SPRAWDZANIE PRAWDOPODOBIEŃSTWO KRZYŻOWANIA
+void krzyzowanie(Osoba Ludzie[], const unsigned int licznosc, const float pdpK)
 {
-    bool zajety[licznosc]; //SPRAWDZENIE CZY OSOBNIK BYŁ JUŻ KRZYŻOWANY
-    for(int i = 0; i < licznosc; i++) //ZEROWANIE
+    bool zajety[licznosc]; //SPRAWDZA CZY OSOBNIK BYŁ JUŻ KRZYŻOWANY
+    for(int i = 0; i < licznosc; i++) //ZEROWANIE TABLICY (FALSE)
         zajety[i] = false;
 
     int index, random;
@@ -163,7 +163,7 @@ void krzyzowanie(Osoba Ludzie[], const unsigned int licznosc, const float pdpK)/
                 kopiowanie(Ludzie[index].gene, potomek2);
             }
         }
-        else   //PONOWIENIE LOSOWANIA JEŻELI OSOBNIK ZOSTAŁ JUŻ WCZEŚNIEJ WYLOSOWANY
+        else   //JEZELI OSOBNIK JUŻ ZOSTAŁ WYLOSOWANY, NASTĘPUJE PONOWNE LOSOWANIE
         {
             i--;
             continue;
@@ -171,7 +171,7 @@ void krzyzowanie(Osoba Ludzie[], const unsigned int licznosc, const float pdpK)/
     }
 }
 
-void mutacja(char gene[], const float pdpM)  //MUTOWANIE POSZCZEGÓLNYCH GENÓW
+void mutacja(char gene[], const float pdpM)  //MUTOWANIE GENÓW
 {
     int random;
 
@@ -188,7 +188,7 @@ void mutacja(char gene[], const float pdpM)  //MUTOWANIE POSZCZEGÓLNYCH GENÓW
     }
 }
 
-void selekcja(Osoba Ludzie[], const unsigned int licznosc, const double a, const double b, const double c)  //Dokonywanie selekcji do nastepnej populacji
+void selekcja(Osoba Ludzie[], const unsigned int licznosc, const double a, const double b, const double c)  //SELEKCJA DO NASTEPNEJ POPULACJI
 {
     double fsuma = 0;
     double f[licznosc];
@@ -206,12 +206,12 @@ void selekcja(Osoba Ludzie[], const unsigned int licznosc, const double a, const
     }
 
     //LOSOWANIE
-    Osoba osobnikiTmp[licznosc]; //TABELA POMOCNICZA, LUDZIE DO NOWEJ POPULACJI
+    Osoba osobnikiTmp[licznosc]; //LUDZIE DO NOWEJ POPULACJI
     float random, tmp;
 
-    for(int i = 0; i < licznosc; i++)   //LOSUJEMY OSOBNIKÓW W LICZBIE TAKIEJ SAMEJ JAK ZMIENNA LICZNOSC
+    for(int i = 0; i < licznosc; i++)   //LOSOWANIE OSOBNIKÓW W LICZBIE "LICZNOŚĆ"
     {
-        //LOSOWANIE 0 1
+        //Losujemy liczbe od 0 do 1(w zmiennej random)
         //Suma wszystkich elemetnow tablicy p wynosi 1 (selekcja)
         random = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
         tmp = 0;
@@ -230,7 +230,7 @@ void selekcja(Osoba Ludzie[], const unsigned int licznosc, const double a, const
 
     for(int i = 0; i < licznosc; i++)
     {
-        kopiowanie(Ludzie[i].gene, osobnikiTmp[i].gene); //KOPIOWANIE OSOBNIKÓW DO NASTĘPNEJ POPULACJI
+        kopiowanie(Ludzie[i].gene, osobnikiTmp[i].gene); //KOPIOWANIE DO NASTEPNEJ POPULACJI
         Ludzie[i].w = osobnikiTmp[i].w;
     }
 }
@@ -264,7 +264,7 @@ int main()
 
 
     Osoba Ludzie[liczebnoscPop]; //TWORZY TABLICĘ STRUKTUR
-    tworzenieOsoby(Ludzie, liczebnoscPop); //Losowa inicjalizacja genow
+    tworzenieOsoby(Ludzie, liczebnoscPop);
 
     for(int k = 0; k < liczbaUruchomien; k++)
     {
