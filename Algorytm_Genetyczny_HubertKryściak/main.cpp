@@ -3,7 +3,6 @@
 #include <time.h>
 #include <math.h>
 #include <fstream>
-
 #define genes_lenght 8 //TUTAJ NALEŻY ZDEFINIOWAĆ DŁUGOŚĆ GENÓW
 
 
@@ -13,18 +12,17 @@ using namespace std;
 
 struct Osoba
 {
-    char gene[genes_lenght + 1]; // liczby binarne
-    //+1 bo 0  to znak koncowy
-    unsigned int w; //Wartosc powyzszego ciagu
+    char gene[genes_lenght + 1]; //GENY +1 BO 0 TO ZNAK KOŃCOWY
+    unsigned int w;
 };
-////////////////////////////////////////////////////////////////////////////////////////////////
 
-void clean(string nazwaPliku) //czysci plik
+
+void clean(string nazwaPliku)
 {
     remove("results.txt");
 }
 
-void kopiowanie(char gen1[], const char gen2[])  //Kopiowanie tablice gen2 do gen1
+void kopiowanie(char gen1[], const char gen2[])  //KOPIOWANIE GEN1 DO GEN2
 {
     for(int i = 0; i < genes_lenght; i++)
     {
@@ -37,7 +35,7 @@ void kopiowanie(char gen1[], const char gen2[])  //Kopiowanie tablice gen2 do ge
     }
 }
 
-unsigned int binNaDec(const char gene[])  //zamienia i wypisuje 0/1
+unsigned int binNaDec(const char gene[])  //KONWERTER BINNADEC
 {
     unsigned int w = 0;
     char genTmp[genes_lenght];
@@ -75,12 +73,6 @@ void tworzenieOsoby(Osoba Ludzie[], const unsigned int licznosc)  //PRZYDZIELA L
     }
 }
 
-//void wypiszOsoby(const Osoba Ludzie[], const unsigned int licznosc)  //Funkcja wypisujaca na ekran wartosci wszystkich osobnikow
-//{
-//    for(int i = 0; i < licznosc; i++)
-//        cout << i << ": " << Ludzie[i].gene << ", wartosc: " << Ludzie[i].w << endl;
-//}
-
 double kwadrat(const double a, const double b, const double c, const double x)
 {
     double y = a * x * x + b * x + c;
@@ -109,7 +101,7 @@ void Najlepszy(Osoba Ludzie[], const unsigned int licznosc, const double a, cons
 
     if (!plik)
         cout << "Nie moge otworzyc pliku!\n";
-    plik << xMax << "     " << maxW << endl;
+    plik << maxW << "     " << xMax << endl;
     plik.close();
 }
 
@@ -142,12 +134,12 @@ void krzyzowanie(Osoba Ludzie[], const unsigned int licznosc, const float pdpK)
         zajety[i] = false;
 
     int index, random;
-    char potomek1[genes_lenght + 1]; //+ 1  0 to znak koncowy napisu
+    char potomek1[genes_lenght + 1]; //+ 1  0 TO ZNAK KONCOWY NAPISU
     char potomek2[genes_lenght + 1];
-    potomek1[genes_lenght] = 0; //Znak konczacy napis - nie element genu
+    potomek1[genes_lenght] = 0; //ZNAK KOŃCOWY NAPISU
     potomek2[genes_lenght] = 0;
 
-    for(int i = 0; i < licznosc/2; i++)   //Do polowy tablicy osobnikow, dla nich losujemy osobnikow z drugiej polowy
+    for(int i = 0; i < licznosc/2; i++)   //LOSOWANIE DO POŁOWY, DLA TEJ POŁOWY LOSOWANE SĄ OSOBNIKI Z DRUGIEJ POLOWY
     {
         index = rand() % (licznosc/2) + (licznosc/2);
         if(!zajety[index])
@@ -244,23 +236,16 @@ int main()
     clean("results.txt");
 
     //TUTAJ NALEŻY PODAC WARTOŚCI WSPÓŁCZYNNIKÓW, LICZBE I LICZEBNOSC ORAZ LICZBE PRZEJŚĆ ALGORYTMU
-    double a = 5;
+    double a = 4;
     double b = 7;
-    double c = 4;
+    double c = 2;
     const unsigned int liczbaPop = 15; //TUTAJ NALEŻY ZDEFINIOWAĆ ILOŚĆ POPULACJI
     const unsigned int liczebnoscPop = 10; //TUTAJ NALEŻY ZDEFINIOWAĆ PARZYSTĄ LICZBĘ OSOBNIKÓW W POPULACJI
-    unsigned int liczbaUruchomien = 5; //TUTAJ NALEŻY ZDEFINIOWAĆ LICZBĘ PRZEJŚĆ ALGORYTMU
+    unsigned int liczbaUruchomien = 40; //TUTAJ NALEŻY ZDEFINIOWAĆ LICZBĘ PRZEJŚĆ ALGORYTMU
 
     //TUTAJ NALEŻY ZDEFINIOWAĆ PRAWDOPODOBIEŃSTWA KRZYŻOWANIA I MUTACJI
     const float pdpK = 0.8;
     const float pdpM = 0.1;
-
-
-    if(liczebnoscPop % 2 != 0) //ZABEZPIECZENIE PRZED NIEPARZYSTĄ LICZBĄ OSOBNIKÓW
-    {
-        cout << "Licznosc populacji musi byc parzysta!" << endl;
-        return 1;
-    }
 
 
     Osoba Ludzie[liczebnoscPop]; //TWORZY TABLICĘ STRUKTUR
@@ -269,19 +254,18 @@ int main()
     for(int k = 0; k < liczbaUruchomien; k++)
     {
         cout << endl << endl << "Przejscie: " << k + 1 << endl;
-        for(int i = 0; i < liczbaPop; i++)
+        for(int i = 0; i < liczbaPop-1; i++)
         {
-            //cout << endl << "Populacja nr: " << i + 1 << endl;
-            //wypiszOsoby(Ludzie, liczebnoscPop);
             krzyzowanie(Ludzie, liczebnoscPop, pdpK); //WYWOŁANIE KRZYŻOWANIA
             for(int j = 0; j < liczebnoscPop; j++)
                 mutacja(Ludzie[j].gene, pdpM);
             selekcja(Ludzie, liczebnoscPop, a, b, c);
             ustawWartosc(Ludzie, liczebnoscPop);
 
-            if(i == liczbaPop - 1) //NAJLEPSZY OSOBNIK Z POPULACJI
-                Najlepszy(Ludzie, liczebnoscPop, a, b, c);
+
         }
+        //if(i == liczbaPop - 1) //NAJLEPSZY OSOBNIK Z POPULACJI
+                Najlepszy(Ludzie, liczebnoscPop, a, b, c);
     }
 
     return 0;
